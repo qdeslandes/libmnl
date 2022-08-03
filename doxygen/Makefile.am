@@ -4,18 +4,7 @@ doc_srcs = $(shell find $(top_srcdir)/src -name '*.c')
 
 doxyfile.stamp: $(doc_srcs) Makefile.am
 	rm -rf html man
-
-# Test for running under make distcheck.
-# If so, sibling src directory will be empty:
-# move it out of the way and symlink the real one while we run doxygen.
-	[ -f ../src/Makefile.in ] || \
-{ set -x; cd ..; mv src src.distcheck; ln -s $(top_srcdir)/src; }
-
 	cd ..; doxygen doxygen.cfg >/dev/null
-
-	[ ! -d ../src.distcheck ] || \
-{ set -x; cd ..; rm src; mv src.distcheck src; }
-
 # We need to use bash for its associative array facility
 # (`bash -p` prevents import of functions from the environment).
 # The command has to be a single line so the functions work
