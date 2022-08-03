@@ -4,7 +4,7 @@ doc_srcs = $(shell find $(top_srcdir)/src -name '*.c')
 
 doxyfile.stamp: $(doc_srcs) Makefile.am
 	rm -rf html man
-	cd ..; doxygen doxygen.cfg >/dev/null
+	doxygen doxygen.cfg >/dev/null
 # We need to use bash for its associative array facility
 # (`bash -p` prevents import of functions from the environment).
 # The command has to be a single line so the functions work

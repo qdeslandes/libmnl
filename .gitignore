@@ -15,7 +15,6 @@ Makefile.in
 /libtool
 /stamp-h1
 
-/doxygen.cfg
 /libmnl.pc
 
 /libmnl-*.tar.bz2

@@ -27,7 +27,20 @@ regular_CFLAGS="-Wall -Waggregate-return -Wmissing-declarations \
 	-Wformat=2 -pipe"
 AC_SUBST([regular_CPPFLAGS])
 AC_SUBST([regular_CFLAGS])
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile include/libmnl/Makefile include/linux/Makefile include/linux/netfilter/Makefile examples/Makefile examples/genl/Makefile examples/kobject/Makefile examples/netfilter/Makefile examples/rtnl/Makefile libmnl.pc doxygen.cfg doxygen/Makefile])
+AC_CONFIG_FILES([Makefile
+		 src/Makefile
+		 include/Makefile
+		 include/libmnl/Makefile
+		 include/linux/Makefile
+		 include/linux/netfilter/Makefile
+		 examples/Makefile
+		 examples/genl/Makefile
+		 examples/kobject/Makefile
+		 examples/netfilter/Makefile
+		 examples/rtnl/Makefile
+		 libmnl.pc
+		 doxygen/doxygen.cfg
+		 doxygen/Makefile])
 
 AC_ARG_WITH([doxygen], [AS_HELP_STRING([--with-doxygen],
 	    [create doxygen documentation])],
