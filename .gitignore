@@ -17,3 +17,5 @@ Makefile.in
 
 /doxygen.cfg
 /libmnl.pc
+
+/libmnl-*.tar.bz2
