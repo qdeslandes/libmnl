@@ -135,7 +135,7 @@ EXPORT_SYMBOL struct mnl_socket *mnl_socket_open(int bus)
  * \param bus the netlink socket bus ID (see NETLINK_* constants)
  * \param flags the netlink socket flags (see SOCK_* constants in socket(2))
  *
- * This is similar to mnl_socket_open(), but allows to set flags like
+ * This is similar to mnl_socket_open(), but allows one to set flags like
  * SOCK_CLOEXEC at socket creation time (useful for multi-threaded programs
  * performing exec calls).
  *

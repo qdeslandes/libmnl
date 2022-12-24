@@ -122,7 +122,7 @@ EXPORT_SYMBOL struct nlattr *mnl_attr_next(const struct nlattr *attr)
  * \param attr pointer to attribute to be checked
  * \param max maximum attribute type
  *
- * This function allows to check if the attribute type is higher than the
+ * This function allows one to check if the attribute type is higher than the
  * maximum supported type.
  *
  * Strict attribute checking in user-space is not a good idea since you may
@@ -236,7 +236,7 @@ EXPORT_SYMBOL int mnl_attr_validate(const struct nlattr *attr, enum mnl_attr_dat
  * \param type attribute type (see enum mnl_attr_data_type)
  * \param exp_len expected attribute data size
  *
- * This function allows to perform a more accurate validation for attributes
+ * This function allows one to perform a more accurate validation for attributes
  * whose size is variable.
  *
  * On an error, errno is explicitly set.
@@ -262,8 +262,8 @@ EXPORT_SYMBOL int mnl_attr_validate2(const struct nlattr *attr,
  * \param cb callback function that is called for each attribute
  * \param data pointer to data that is passed to the callback function
  *
- * This function allows to iterate over the sequence of attributes that compose
- * the Netlink message. You can then put the attribute in an array as it
+ * This function allows you to iterate over the sequence of attributes that
+ * compose the Netlink message. You can then put the attribute in an array as it
  * usually happens at this stage or you can use any other data structure (such
  * as lists or trees).
  *
@@ -289,8 +289,8 @@ EXPORT_SYMBOL int mnl_attr_parse(const struct nlmsghdr *nlh,
  * \param cb callback function that is called for each attribute in the nest
  * \param data pointer to data passed to the callback function
  *
- * This function allows to iterate over the sequence of attributes that compose
- * the Netlink message. You can then put the attribute in an array as it
+ * This function allows you to iterate over the sequence of attributes that
+ * compose the Netlink message. You can then put the attribute in an array as it
  * usually happens at this stage or you can use any other data structure (such
  * as lists or trees).
  *

@@ -518,9 +518,9 @@ EXPORT_SYMBOL bool mnl_nlmsg_batch_next(struct mnl_nlmsg_batch *b)
  * mnl_nlmsg_batch_reset - reset the batch
  * \param b pointer to batch
  *
- * This function allows to reset a batch, so you can reuse it to create a
- * new one. This function moves the last message which does not fit the
- * batch to the head of the buffer, if any.
+ * This function allows you to reset a batch, so you can reuse it to create a
+ * new one. This function moves the last message which does not fit the batch to
+ * the head of the buffer, if any.
  */
 EXPORT_SYMBOL void mnl_nlmsg_batch_reset(struct mnl_nlmsg_batch *b)
 {
