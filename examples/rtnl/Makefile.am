@@ -2,6 +2,7 @@ include $(top_srcdir)/Make_global.am
 
 check_PROGRAMS = rtnl-addr-add \
 		 rtnl-addr-dump \
+		 rtnl-link-can \
 		 rtnl-link-dump rtnl-link-dump2 rtnl-link-dump3 \
 		 rtnl-link-event \
 		 rtnl-link-set \
@@ -12,6 +13,9 @@ check_PROGRAMS = rtnl-addr-add \
 
 rtnl_addr_add_SOURCES = rtnl-addr-add.c
 rtnl_addr_add_LDADD = ../../src/libmnl.la
+
+rtnl_link_can_SOURCES = rtnl-link-can.c
+rtnl_link_can_LDADD = ../../src/libmnl.la
 
 rtnl_addr_dump_SOURCES = rtnl-addr-dump.c
 rtnl_addr_dump_LDADD = ../../src/libmnl.la
