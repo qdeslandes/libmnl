@@ -32,6 +32,7 @@ AC_CONFIG_FILES([Makefile
 		 include/Makefile
 		 include/libmnl/Makefile
 		 include/linux/Makefile
+		 include/linux/can/Makefile
 		 include/linux/netfilter/Makefile
 		 examples/Makefile
 		 examples/genl/Makefile
