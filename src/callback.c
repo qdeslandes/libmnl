@@ -9,6 +9,7 @@
 
 #include <errno.h>
 #include <libmnl/libmnl.h>
+#include <linux/netfilter/nfnetlink.h>
 #include "internal.h"
 
 static int mnl_cb_noop(const struct nlmsghdr *nlh, void *data)
@@ -55,6 +56,8 @@ static inline int __mnl_cb_run(const void *buf, size_t numbytes,
 	const struct nlmsghdr *nlh = buf;
 
 	while (mnl_nlmsg_ok(nlh, len)) {
+		mnl_nlmsg_fprintf(stderr, nlh, nlh->nlmsg_len, sizeof(struct nfgenmsg));
+
 		/* check message source */
 		if (!mnl_nlmsg_portid_ok(nlh, portid)) {
 			errno = ESRCH;
