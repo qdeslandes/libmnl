@@ -14,6 +14,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <libmnl/libmnl.h>
+#include <linux/netfilter/nf_tables.h>
 #include "internal.h"
 
 /**
@@ -230,16 +231,58 @@ EXPORT_SYMBOL bool mnl_nlmsg_portid_ok(const struct nlmsghdr *nlh,
 	return nlh->nlmsg_pid && portid ? nlh->nlmsg_pid == portid : true;
 }
 
+static const char *mnl_nlmsg_cmd_to_str(int cmd)
+{
+	static const char *str[] = {
+		[NFT_MSG_NEWTABLE] = "NFT_MSG_NEWTABLE",
+		[NFT_MSG_GETTABLE] = "NFT_MSG_GETTABLE",
+		[NFT_MSG_DELTABLE] = "NFT_MSG_DELTABLE",
+		[NFT_MSG_NEWRULE] = "NFT_MSG_NEWRULE",
+		[NFT_MSG_GETRULE] = "NFT_MSG_GETRULE",
+		[NFT_MSG_DELRULE] = "NFT_MSG_DELRULE",
+		[NFT_MSG_NEWSET] = "NFT_MSG_NEWSET",
+		[NFT_MSG_GETSET] = "NFT_MSG_GETSET",
+		[NFT_MSG_DELSET] = "NFT_MSG_DELSET",
+		[NFT_MSG_NEWSETELEM] = "NFT_MSG_NEWSETELEM",
+		[NFT_MSG_GETSETELEM] = "NFT_MSG_GETSETELEM",
+		[NFT_MSG_DELSETELEM] = "NFT_MSG_DELSETELEM",
+		[NFT_MSG_NEWGEN] = "NFT_MSG_NEWGEN",
+		[NFT_MSG_GETGEN] = "NFT_MSG_GETGEN",
+		[NFT_MSG_TRACE] = "NFT_MSG_TRACE",
+		[NFT_MSG_NEWOBJ] = "NFT_MSG_NEWOBJ",
+		[NFT_MSG_GETOBJ] = "NFT_MSG_GETOBJ",
+		[NFT_MSG_DELOBJ] = "NFT_MSG_DELOBJ",
+		[NFT_MSG_GETOBJ_RESET] = "NFT_MSG_GETOBJ_RESET",
+		[NFT_MSG_NEWFLOWTABLE] = "NFT_MSG_NEWFLOWTABLE",
+		[NFT_MSG_GETFLOWTABLE] = "NFT_MSG_GETFLOWTABLE",
+		[NFT_MSG_DELFLOWTABLE] = "NFT_MSG_DELFLOWTABLE",
+		[NFT_MSG_GETRULE_RESET] = "NFT_MSG_GETRULE_RESET",
+		[NFT_MSG_DESTROYTABLE] = "NFT_MSG_DESTROYTABLE",
+		[NFT_MSG_DESTROYCHAIN] = "NFT_MSG_DESTROYCHAIN",
+		[NFT_MSG_DESTROYRULE] = "NFT_MSG_DESTROYRULE",
+		[NFT_MSG_DESTROYSET] = "NFT_MSG_DESTROYSET",
+		[NFT_MSG_DESTROYSETELEM] = "NFT_MSG_DESTROYSETELEM",
+		[NFT_MSG_DESTROYOBJ] = "NFT_MSG_DESTROYOBJ",
+		[NFT_MSG_DESTROYFLOWTABLE] = "NFT_MSG_DESTROYFLOWTABLE",
+	};
+
+	if (cmd < 0 || cmd >= NFT_MSG_MAX)
+		return "unknown";
+
+	return str[cmd];
+}
+
 static void mnl_nlmsg_fprintf_header(FILE *fd, const struct nlmsghdr *nlh)
 {
 	fprintf(fd, "----------------\t------------------\n");
 	fprintf(fd, "|  %.010u  |\t| message length |\n", nlh->nlmsg_len);
-	fprintf(fd, "| %.05u | %c%c%c%c |\t|  type | flags  |\n",
+	fprintf(fd, "| %.05u | %c%c%c%c |\t|  type | flags  |\t type = %s (%d) \n",
 		nlh->nlmsg_type,
 		nlh->nlmsg_flags & NLM_F_REQUEST ? 'R' : '-',
 		nlh->nlmsg_flags & NLM_F_MULTI ? 'M' : '-',
 		nlh->nlmsg_flags & NLM_F_ACK ? 'A' : '-',
-		nlh->nlmsg_flags & NLM_F_ECHO ? 'E' : '-');
+		nlh->nlmsg_flags & NLM_F_ECHO ? 'E' : '-',
+        mnl_nlmsg_cmd_to_str(nlh->nlmsg_type & 0xFF), nlh->nlmsg_type & 0xFF);
 	fprintf(fd, "|  %.010u  |\t| sequence number|\n", nlh->nlmsg_seq);
 	fprintf(fd, "|  %.010u  |\t|     port ID    |\n", nlh->nlmsg_pid);
 	fprintf(fd, "----------------\t------------------\n");
