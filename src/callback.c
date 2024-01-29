@@ -9,6 +9,7 @@
 
 #include <errno.h>
 #include <libmnl/libmnl.h>
+#include <linux/netfilter/nfnetlink.h>
 #include "internal.h"
 
 static int mnl_cb_noop(const struct nlmsghdr *nlh, void *data)
@@ -21,7 +22,7 @@ static int mnl_cb_error(const struct nlmsghdr *nlh, void *data)
 	const struct nlmsgerr *err = mnl_nlmsg_get_payload(nlh);
 
 	if (nlh->nlmsg_len < mnl_nlmsg_size(sizeof(struct nlmsgerr))) {
-		errno = EBADMSG; 
+		errno = EBADMSG;
 		return MNL_CB_ERROR;
 	}
 	/* Netlink subsystems returns the errno value with different signess */
@@ -54,43 +55,57 @@ static inline int __mnl_cb_run(const void *buf, size_t numbytes,
 	int ret = MNL_CB_OK, len = numbytes;
 	const struct nlmsghdr *nlh = buf;
 
+	// fprintf(stderr, "__mnl_cb_run : processing message\n");
 	while (mnl_nlmsg_ok(nlh, len)) {
+		// fprintf(stderr, "__mnl_cb_run : processing a message: %p, %d\n", nlh, len);
+		// mnl_nlmsg_fprintf(stderr, nlh, nlh->nlmsg_len, sizeof(struct nfgenmsg));
+
 		/* check message source */
 		if (!mnl_nlmsg_portid_ok(nlh, portid)) {
+			fprintf(stderr, "__mnl_cb_run : invalid portid: %d\n", portid);
 			errno = ESRCH;
 			return -1;
 		}
 		/* perform sequence tracking */
 		if (!mnl_nlmsg_seq_ok(nlh, seq)) {
+			// fprintf(stderr, "__mnl_cb_run : invalid seq: %d\n", seq);
 			errno = EPROTO;
 			return -1;
 		}
 
 		/* dump was interrupted */
 		if (nlh->nlmsg_flags & NLM_F_DUMP_INTR) {
+			// fprintf(stderr, "__mnl_cb_run : NLM_F_DUMP_INTR flag is set\n");
 			errno = EINTR;
 			return -1;
 		}
 
 		/* netlink data message handling */
-		if (nlh->nlmsg_type >= NLMSG_MIN_TYPE) { 
+		if (nlh->nlmsg_type >= NLMSG_MIN_TYPE)
+		{
 			if (cb_data){
 				ret = cb_data(nlh, data);
 				if (ret <= MNL_CB_STOP)
 					goto out;
 			}
-		} else if (nlh->nlmsg_type < cb_ctl_array_len) {
+		}
+		else if (nlh->nlmsg_type < cb_ctl_array_len)
+		{
 			if (cb_ctl_array && cb_ctl_array[nlh->nlmsg_type]) {
 				ret = cb_ctl_array[nlh->nlmsg_type](nlh, data);
 				if (ret <= MNL_CB_STOP)
 					goto out;
 			}
-		} else if (default_cb_array[nlh->nlmsg_type]) {
+		}
+		else if (default_cb_array[nlh->nlmsg_type])
+		{
 			ret = default_cb_array[nlh->nlmsg_type](nlh, data);
 			if (ret <= MNL_CB_STOP)
 				goto out;
 		}
+
 		nlh = mnl_nlmsg_next(nlh, &len);
+		// fprintf(stderr, "__mnl_cb_run : got the next message: %p, %d\n", nlh, len);
 	}
 out:
 	return ret;

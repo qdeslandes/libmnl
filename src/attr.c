@@ -278,8 +278,11 @@ EXPORT_SYMBOL int mnl_attr_parse(const struct nlmsghdr *nlh,
 	const struct nlattr *attr;
 
 	mnl_attr_for_each(attr, nlh, offset)
+	{
+		// mnl_nlmsg_fprintf(stderr, nlh, nlh->nlmsg_len, 4);
 		if ((ret = cb(attr, data)) <= MNL_CB_STOP)
 			return ret;
+	}
 	return ret;
 }
 
